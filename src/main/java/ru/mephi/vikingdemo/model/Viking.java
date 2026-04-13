@@ -17,7 +17,9 @@ public record Viking(
         HairColor hairColor,
         @Schema(description = "Форма бороды")
         BeardStyle beardStyle,
-        @ArraySchema(schema = @Schema(implementation = EquipmentItem.class), arraySchema = @Schema(description = "Снаряжение викинга"))
+        @ArraySchema(schema = @Schema(implementation = EquipmentItem.class),
+                arraySchema = @Schema(description = "Снаряжение викинга"))
         List<EquipmentItem> equipment
 ) {
+
 }

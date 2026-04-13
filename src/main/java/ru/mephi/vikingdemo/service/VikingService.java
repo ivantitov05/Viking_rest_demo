@@ -29,4 +29,9 @@ public class VikingService {
         vikings.add(viking);
         return viking;
     }
+
+    public Viking save(Viking viking) {
+        vikings.add(viking);
+        return viking;
+    }
 }
