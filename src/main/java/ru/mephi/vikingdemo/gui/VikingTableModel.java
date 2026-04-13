@@ -19,6 +19,34 @@ public class VikingTableModel extends AbstractTableModel {
         fireTableRowsInserted(row, row);
     }
 
+    public boolean deleteViking(Viking viking) {
+        int index = data.indexOf(viking);
+        if (index != -1) {
+            data.remove(index);
+            fireTableRowsDeleted(index, index);
+            return true;
+        }
+        return false;
+    }
+
+        public void deleteRow(int rowIndex) {
+        if (rowIndex >= 0 && rowIndex < data.size()) {
+            data.remove(rowIndex);
+            fireTableRowsDeleted(rowIndex, rowIndex);
+        }
+    }
+    
+    public boolean updateViking(String oldName, Viking updatedViking) {
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).name().equalsIgnoreCase(oldName)) {
+                data.set(i, updatedViking);
+                fireTableRowsUpdated(i, i);
+                return true;
+            }
+    }
+    return false;
+}
+
     @Override
     public int getRowCount() {
         return data.size();

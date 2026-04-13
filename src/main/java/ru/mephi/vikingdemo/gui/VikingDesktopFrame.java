@@ -6,6 +6,7 @@ import ru.mephi.vikingdemo.service.VikingService;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -48,6 +49,40 @@ public class VikingDesktopFrame extends JFrame {
     private void onCreateViking() {
         Viking viking = vikingService.createRandomViking();
         tableModel.addViking(viking);
+    }
+
+    public void deleteViking(String name) {
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            String vikingName = (String) tableModel.getValueAt(i, 0);
+            if (vikingName.equalsIgnoreCase(name)) {
+                tableModel.deleteRow(i);
+                break;
+            }
+        }
+    }
+
+    public void updateViking(String oldName, Viking updatedViking){
+        boolean updated = tableModel.updateViking(oldName, updatedViking);
+        
+        if (updated) {
+            System.out.println("✓ GUI updated: " + oldName + " -> " + updatedViking.name());
+            
+            // Опционально: показать уведомление
+            JOptionPane.showMessageDialog(this, 
+                "Viking updated successfully!\n" +
+                "Old name: " + oldName + "\n" +
+                "New name: " + updatedViking.name(),
+                "Update Success", 
+                JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            System.out.println("✗ Viking not found in GUI: " + oldName);
+            
+            // Опционально: показать ошибку
+            JOptionPane.showMessageDialog(this, 
+                "Viking '" + oldName + "' not found in table",
+                "Update Failed", 
+                JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     public void addNewViking(Viking viking){
