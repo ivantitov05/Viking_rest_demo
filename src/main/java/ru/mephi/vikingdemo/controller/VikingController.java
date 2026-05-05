@@ -4,14 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.mephi.vikingdemo.model.BeardStyle;
+import ru.mephi.vikingdemo.model.HairColor;
 import ru.mephi.vikingdemo.model.Viking;
 import ru.mephi.vikingdemo.service.VikingService;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.PostMapping;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/vikings")
@@ -57,5 +57,104 @@ public class VikingController {
     public void addViking(){
         System.out.println("POST api/vikings/post called");
         vikingListener.testAdd();
+    }
+
+    @GetMapping("/stats/age/greater")
+    @Operation(summary = "колво викингов старше ук. возраста")
+    public long countByAgeGreaterThan(@RequestParam int age){
+        return vikingService.countByAgeGreaterThan(age);
+    }
+
+    @GetMapping("stats/age/less")
+    @Operation(summary = "колво викингов моложе ук. возраста")
+    public long countByAgeLessThan(@RequestParam int age){
+        return vikingService.countByAgeLessThan(age);
+    }
+
+    @GetMapping("stats/age/between")
+    @Operation(summary = "колво викингов между ук. возрастами")
+    public long countByAgeBetween(@RequestParam int minage,@RequestParam int maxage){
+        return vikingService.countByAgeBetween(minage, maxage);
+    }
+
+    @GetMapping("stats/age/outside")
+    @Operation(summary = "колво викингов вне ук. возрастов")
+    public long countByAgeOutside(@RequestParam int minage,@RequestParam int maxage){
+        return vikingService.countByAgeOutside(minage, maxage);
+    }
+
+    @GetMapping("/stats/beard-hair")
+    @Operation(summary = "Подсчет по форме бороды и цвету волос")
+    public long countByBeardAndHair(@RequestParam BeardStyle beard,
+                                    @RequestParam HairColor hair) {
+        return vikingService.countByBeardAndHair(beard, hair);
+    }
+
+
+    @GetMapping("/stats/axes/count")
+    @Operation(summary = "Подсчет викингов с определенным количеством топоров")
+    public long countByAxesCount(@RequestParam int count) {
+        return vikingService.countByAxesCount(count);
+    }
+
+    @GetMapping("/stats/one-axe")
+    @Operation(summary = "Викинги с одним топором")
+    public long countWithOneAxe() {
+        return vikingService.countByAxesCount(1);
+    }
+
+    @GetMapping("/stats/two-axes")
+    @Operation(summary = "Викинги с двумя топорами")
+    public long countWithTwoAxes() {
+        return vikingService.countByAxesCount(2);
+    }
+
+    @GetMapping("/stats/specific-criteria")
+    @Operation(summary = "Сложное условие (возраст>30, FORKED, BLOND, 1 топор)")
+    public long countBySpecificCriteria() {
+        return vikingService.countBySpecificCriteria();
+    }
+
+    @GetMapping("/stats/custom")
+    @Operation(summary = "Произвольное условие (пример: возраст > 25, рост > 180, борода LONG)")
+    public long customStats() {
+        return vikingService.countVikingsWithCondition(v ->
+                v.age() > 25 &&
+                        v.heightCm() > 180 &&
+                        v.beardStyle() == BeardStyle.LONG &&
+                        v.equipment().stream().anyMatch(e -> e.name().contains("AXE"))
+        );
+    }
+
+    @GetMapping("/random-tall")
+    @Operation(summary = "Случайный викинг ростом выше 180 см")
+    public Viking getRandomVikingTallerThan180() {
+        Viking viking = vikingService.getRandomVikingTallerThan180();
+        if (viking == null) {
+            throw new RuntimeException("Нет викингов ростом выше 180 см");
+        }
+        return viking;
+    }
+
+    @GetMapping("/legendary-equipment")
+    @Operation(summary = "Все викинги с легендарным снаряжением")
+    public List<Viking> getVikingsWithLegendaryEquipment() {
+        return vikingService.getVikingsWithLegendaryEquipment();
+    }
+
+    @GetMapping("/redheads")
+    @Operation(summary = "Рыжеволосые викинги, сортированные по возрасту")
+    public List<Viking> getRedheadsSortedByAge(
+            @RequestParam(defaultValue = "asc") String order) {
+
+        boolean ascending = "asc".equalsIgnoreCase(order);
+        return vikingService.getRedheadsSortedByAge(ascending);
+    }
+
+    @PostMapping("/generate-multiple")
+    @Operation(summary = "Массовая генерация викингов")
+    public List<Viking> generateMultipleVikings(@RequestParam int count) {
+        System.out.println("POST /api/vikings/generate-multiple?count=" + count);
+        return vikingService.generateMultipleVikings(count);
     }
 }

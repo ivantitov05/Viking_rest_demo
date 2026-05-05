@@ -3,14 +3,7 @@ package ru.mephi.vikingdemo.gui;
 import ru.mephi.vikingdemo.model.Viking;
 import ru.mephi.vikingdemo.service.VikingService;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -42,8 +35,12 @@ public class VikingDesktopFrame extends JFrame {
         JButton createButton = new JButton("Create random viking");
         createButton.addActionListener(event -> onCreateViking());
 
+        JButton statsButton = new JButton(" Статистика викингов");
+        statsButton.addActionListener(event -> openStatsDialog());
+
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(createButton);
+        bottomPanel.add(statsButton);
         add(bottomPanel, BorderLayout.SOUTH);
         
         onInit();
@@ -52,6 +49,13 @@ public class VikingDesktopFrame extends JFrame {
     private void onCreateViking() {
         Viking viking = vikingService.createRandomViking();
         tableModel.addViking(viking);
+    }
+
+    private void openStatsDialog() {
+        SwingUtilities.invokeLater(() -> {
+            VikingStatsDialog statsDialog = new VikingStatsDialog(this, vikingService);
+            statsDialog.setVisible(true);
+        });
     }
 
     public void deleteViking(String name) {
