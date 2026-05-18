@@ -6,6 +6,7 @@ import ru.mephi.vikingdemo.service.VikingService;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -56,7 +57,7 @@ public class VikingStatsDialog extends JDialog {
         randomTallArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         randomTallArea.setBackground(new Color(240, 248, 255));
 
-        JButton randomButton = new JButton("🎲 Показать случайного высокого викинга");
+        JButton randomButton = new JButton("Показать случайного высокого викинга");
         randomButton.setFont(randomButton.getFont().deriveFont(Font.BOLD, 14f));
         randomButton.addActionListener(e -> showRandomTallViking());
 
@@ -240,8 +241,21 @@ public class VikingStatsDialog extends JDialog {
             return;
         }
 
-        int maxId = vikings.size();
-        Viking lastViking = vikings.get(maxId - 1);
+        List<IdVikingPair> vikingsWithIds = IntStream.range(0, vikings.size())
+                .mapToObj(i -> new IdVikingPair(i + 1, vikings.get(i)))
+                .toList();
+
+        IdVikingPair maxPair = vikingsWithIds.stream()
+                .max(Comparator.comparingInt(IdVikingPair::id))
+                .orElse(null);
+
+        if (maxPair == null) {
+            idOperationsArea.setText("Ошибка: не удалось найти максимальный ID");
+            return;
+        }
+
+        int maxId = maxPair.id();
+        Viking lastViking = maxPair.viking();
 
         String result = String.format(
                 "╔══════════════════════════════════════════════════════════════╗\n" +
@@ -401,7 +415,6 @@ public class VikingStatsDialog extends JDialog {
                 .filter(pair -> pair.viking().hairColor().name().equalsIgnoreCase("Red"))
                 .toList();
 
-        // Сортировка с использованием лямбды
         if (ascending) {
             redheadsWithIds = redheadsWithIds.stream()
                     .sorted((p1, p2) -> p1.viking().age() - p2.viking().age())

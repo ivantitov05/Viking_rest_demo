@@ -45,8 +45,6 @@ public class VikingService {
         vikingStorage.deleteById(id);
     }
 
-
-
     public long countVikingsWithCondition(Predicate<Viking> condition) {
         return vikingStorage.findAll().stream()
                 .filter(condition)
@@ -54,7 +52,7 @@ public class VikingService {
     }
 
     public long countByAgeGreaterThan(int age) {
-        return countVikingsWithCondition(v -> v.age() > age);  // v.age(), не v.getAge()
+        return countVikingsWithCondition(v -> v.age() > age);
     }
 
     public long countByAgeLessThan(int age) {
@@ -121,7 +119,7 @@ public class VikingService {
 
     public List<Viking> getRedheadsSortedByAge() {
         return vikingStorage.findAll().stream()
-                .filter(v -> v.hairColor() == HairColor.Red)  // или "Red"
+                .filter(v -> v.hairColor() == HairColor.Red)
                 .sorted(Comparator.comparingInt(Viking::age))
                 .toList();
     }
