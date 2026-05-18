@@ -143,7 +143,7 @@ public class VikingController {
     }
 
     @GetMapping("/redheads")
-    @Operation(summary = "Рыжеволосые викинги, сортированные по возрасту")
+    @Operation(summary = "Рыжебородые викинги, сортированные по возрасту")
     public List<Viking> getRedheadsSortedByAge(
             @RequestParam(defaultValue = "asc") String order) {
 

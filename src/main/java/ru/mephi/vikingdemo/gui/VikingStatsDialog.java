@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import static ru.mephi.vikingdemo.model.BeardStyle.CLEAN_SHAVEN;
+
 public class VikingStatsDialog extends JDialog {
 
     private final VikingService vikingService;
@@ -412,7 +414,8 @@ public class VikingStatsDialog extends JDialog {
 
     private void loadRedheads(boolean ascending) {
         List<IdVikingPair> redheadsWithIds = getVikingsWithIds().stream()
-                .filter(pair -> pair.viking().hairColor().name().equalsIgnoreCase("Red"))
+                .filter(pair -> pair.viking().hairColor().name().equalsIgnoreCase("Red")
+                        && pair.viking().beardStyle().name() != "CLEAN_SHAVEN")
                 .toList();
 
         if (ascending) {

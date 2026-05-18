@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.mephi.vikingdemo.repository.VikingRepository;
 import ru.mephi.vikingdemo.repository.VikingStorage;
 
+import static ru.mephi.vikingdemo.model.BeardStyle.CLEAN_SHAVEN;
+
 @Service
 public class VikingService {
 
@@ -127,7 +129,7 @@ public class VikingService {
 
     public List<Viking> getRedheadsSortedByAge(boolean ascending) {
         Stream<Viking> stream = vikingStorage.findAll().stream()
-                .filter(v -> v.hairColor() == HairColor.Red);
+                .filter(v -> v.hairColor() == HairColor.Red && v.beardStyle() != CLEAN_SHAVEN);
 
         if (ascending) {
             stream = stream.sorted(Comparator.comparingInt(Viking::age));
