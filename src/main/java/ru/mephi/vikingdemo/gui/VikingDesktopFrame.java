@@ -2,6 +2,7 @@ package ru.mephi.vikingdemo.gui;
 
 import ru.mephi.vikingdemo.model.Viking;
 import ru.mephi.vikingdemo.service.VikingService;
+import ru.mephi.vikingdemo.service.VikingSpecialService;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
@@ -14,9 +15,11 @@ public class VikingDesktopFrame extends JFrame {
 
     private final VikingService vikingService;
     private final VikingTableModel tableModel = new VikingTableModel();
+    private final VikingSpecialService vikingSpecialService;
 
-    public VikingDesktopFrame(VikingService vikingService) {
+    public VikingDesktopFrame(VikingService vikingService, VikingSpecialService vikingSpecialService) {
         this.vikingService = vikingService;
+        this.vikingSpecialService = vikingSpecialService;
 
         setTitle("Viking Demo");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,7 +56,7 @@ public class VikingDesktopFrame extends JFrame {
 
     private void openStatsDialog() {
         SwingUtilities.invokeLater(() -> {
-            VikingStatsDialog statsDialog = new VikingStatsDialog(this, vikingService);
+            VikingStatsDialog statsDialog = new VikingStatsDialog(this, vikingService, vikingSpecialService);
             statsDialog.setVisible(true);
         });
     }

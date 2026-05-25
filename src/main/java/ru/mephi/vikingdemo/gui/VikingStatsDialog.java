@@ -2,6 +2,7 @@ package ru.mephi.vikingdemo.gui;
 
 import ru.mephi.vikingdemo.model.Viking;
 import ru.mephi.vikingdemo.service.VikingService;
+import ru.mephi.vikingdemo.service.VikingSpecialService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -16,15 +17,17 @@ import static ru.mephi.vikingdemo.model.BeardStyle.CLEAN_SHAVEN;
 public class VikingStatsDialog extends JDialog {
 
     private final VikingService vikingService;
+    private final VikingSpecialService vikingSpecialService;
     private JTabbedPane tabbedPane;
     private JTextArea randomTallArea;
     private JTable legendaryTable;
     private JTable redheadsTable;
     private JTextArea idOperationsArea;
 
-    public VikingStatsDialog(JFrame parent, VikingService vikingService) {
+    public VikingStatsDialog(JFrame parent, VikingService vikingService, VikingSpecialService vikingSpecialService) {
         super(parent, "Статистика викингов", true);
         this.vikingService = vikingService;
+        this.vikingSpecialService = vikingSpecialService;
         initUI();
         loadData();
         setSize(950, 650);
@@ -413,39 +416,30 @@ public class VikingStatsDialog extends JDialog {
     }
 
     private void loadRedheads(boolean ascending) {
-        List<IdVikingPair> redheadsWithIds = getVikingsWithIds().stream()
-                .filter(pair -> pair.viking().hairColor().name().equalsIgnoreCase("Red")
-                        && pair.viking().beardStyle().name() != "CLEAN_SHAVEN")
-                .toList();
-
-        if (ascending) {
-            redheadsWithIds = redheadsWithIds.stream()
-                    .sorted((p1, p2) -> p1.viking().age() - p2.viking().age())
-                    .toList();
-        } else {
-            redheadsWithIds = redheadsWithIds.stream()
-                    .sorted((p1, p2) -> p2.viking().age() - p1.viking().age())
-                    .toList();
-        }
+        List<VikingSpecialService.VikingWithId> redheads = vikingSpecialService.getRedheadsWithBeardWithIds(ascending);
 
         DefaultTableModel model = (DefaultTableModel) redheadsTable.getModel();
         model.setRowCount(0);
 
-        redheadsWithIds.forEach(pair -> {
-            Viking v = pair.viking();
+        redheads.forEach(item -> {
+            Viking v = item.viking();
             String equipmentStr = v.equipment().stream()
                     .map(e -> e.name() + " (" + e.quality() + ")")
                     .reduce((a, b) -> a + ", " + b)
                     .orElse("");
 
             model.addRow(new Object[]{
-                    pair.id(), v.name(), v.age(), v.heightCm(),
-                    v.beardStyle(), equipmentStr
+                    item.id(),
+                    v.name(),
+                    v.age(),
+                    v.heightCm(),
+                    v.beardStyle(),
+                    equipmentStr
             });
         });
 
-        if (redheadsWithIds.isEmpty()) {
-            model.addRow(new Object[]{"Нет рыжеволосых викингов", "", "", "", "", ""});
+        if (redheads.isEmpty()) {
+            model.addRow(new Object[]{"Нет рыжеволосых викингов с бородой", "", "", "", "", ""});
         }
     }
 }
