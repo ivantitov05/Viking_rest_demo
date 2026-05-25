@@ -69,6 +69,15 @@ public class VikingSpecialService {
         );
     }
 
+    public long countWithOneOrTwoAxes() {
+        return countVikingsWithCondition(v -> {
+            long axesCount = v.equipment().stream()
+                    .filter(item -> "AXE".equals(item.name()))
+                    .count();
+            return axesCount == 1 || axesCount == 2;
+        });
+    }
+
     @SafeVarargs
     public final long countWithComplexCondition(Predicate<Viking>... conditions) {
         return vikingStorage.findAll().stream()

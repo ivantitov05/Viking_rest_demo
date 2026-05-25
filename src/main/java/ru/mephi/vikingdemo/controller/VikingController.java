@@ -112,6 +112,12 @@ public class VikingController {
         return vikingSpecialService.countByAxesCount(2);
     }
 
+    @GetMapping("/stats/one-or-two-axes")
+    @Operation(summary = "Викинги с одним ИЛИ двумя топорами")
+    public long countWithOneOrTwoAxes() {
+        return vikingSpecialService.countWithOneOrTwoAxes();
+    }
+
     @GetMapping("/stats/specific-criteria")
     @Operation(summary = "Сложное условие (возраст>30, FORKED, BLOND, 1 топор)")
     public long countBySpecificCriteria() {
