@@ -118,23 +118,6 @@ public class VikingController {
         return vikingSpecialService.countWithOneOrTwoAxes();
     }
 
-    @GetMapping("/stats/specific-criteria")
-    @Operation(summary = "Сложное условие (возраст>30, FORKED, BLOND, 1 топор)")
-    public long countBySpecificCriteria() {
-        return vikingSpecialService.countBySpecificCriteria();
-    }
-
-    @GetMapping("/stats/custom")
-    @Operation(summary = "Произвольное условие (пример: возраст > 25, рост > 180, борода LONG)")
-    public long customStats() {
-        return vikingSpecialService.countVikingsWithCondition(v ->
-                v.age() > 25 &&
-                        v.heightCm() > 180 &&
-                        v.beardStyle() == BeardStyle.LONG &&
-                        v.equipment().stream().anyMatch(e -> e.name().contains("AXE"))
-        );
-    }
-
     @GetMapping("/random-tall")
     @Operation(summary = "Случайный викинг ростом выше 180 см")
     public Viking getRandomVikingTallerThan180() {

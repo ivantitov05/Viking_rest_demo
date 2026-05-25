@@ -39,7 +39,7 @@ public class VikingStatsDialog extends JDialog {
 
         tabbedPane.addTab("Случайный высокий викинг", createRandomTallPanel());
         tabbedPane.addTab("Легендарное снаряжение", createLegendaryPanel());
-        tabbedPane.addTab("Рыжеволосые (по возрасту)", createRedheadsPanel());
+        tabbedPane.addTab("Рыжебородые (по возрасту)", createRedheadsPanel());
         tabbedPane.addTab("Операции с ID", createIdOperationsPanel());
 
         JButton closeButton = new JButton("Закрыть");
